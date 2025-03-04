@@ -1,0 +1,4 @@
+baseURL = "https://timoteuszelle.github.io/"
+languageCode = "en-us"
+title = "Teh L33t dot Net"
+theme = "Hugo-Terminal"  

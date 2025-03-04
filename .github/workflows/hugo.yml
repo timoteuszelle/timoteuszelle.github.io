@@ -1,0 +1,34 @@
+name: Deploy Hugo Site
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        with:
+          submodules: true
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v27
+        with:
+          nix_path: nixpkgs=channel:nixpkgs-unstable
+
+      - name: Setup Hugo with Nix
+        run: |
+          nix-shell -p hugo --run "hugo version"
+        shell: bash
+
+      - name: Build Site with Nix
+        run: |
+          nix-shell -p hugo --run "hugo --theme Hugo-Terminal --minify"
+        shell: bash
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public
